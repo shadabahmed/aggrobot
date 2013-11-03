@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Aggrobot::VERSION
   spec.authors       = ["Shadab Ahmed"]
   spec.email         = ["shadab.ansari@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Easy and performant aggregation for rails}
+  spec.summary       = %q{Rails aggregation library}
   spec.homepage      = ""
   spec.license       = "MIT"
 
