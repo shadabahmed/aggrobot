@@ -12,7 +12,7 @@ module Aggrobot
 
     def query_results(extra_cols = [])
       return [] if collection_is_none?
-      columns = [@group, SqlAttributes.count] + extra_cols
+      columns = [@group, SqlFunctions.count] + extra_cols
       results_query.pluck(*columns)
     end
 

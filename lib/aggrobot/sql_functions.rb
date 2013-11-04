@@ -1,4 +1,4 @@
-module Aggrobot::SqlAttributes
+module Aggrobot::SqlFunctions
 
   extend self
 

@@ -23,9 +23,9 @@ module Aggrobot
     private
 
     def collect_query_results(extra_cols)
-      columns = ['', SqlAttributes.count] + extra_cols
+      columns = ['', SqlFunctions.count] + extra_cols
       @query_map.collect do |group_name, query|
-        sanitized_group_name = SqlAttributes.sanitize(group_name)
+        sanitized_group_name = SqlFunctions.sanitize(group_name)
         columns[0] = sanitized_group_name
         results = query.group(sanitized_group_name).limit(1).pluck(*columns).first
         @query_map[group_name] = @query_map[group_name].none unless results

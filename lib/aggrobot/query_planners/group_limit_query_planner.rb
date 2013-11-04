@@ -15,7 +15,7 @@ module Aggrobot
 
     def query_results(extra_cols = [])
       return [] if collection_is_none?
-      columns = [@group, SqlAttributes.count] + extra_cols
+      columns = [@group, SqlFunctions.count] + extra_cols
       top_group_results = results_query.where(@top_groups_conditions).pluck(*columns)
       top_group_results + other_group_results(columns)
     end
@@ -24,7 +24,7 @@ module Aggrobot
 
     def other_group_results(columns)
       if @other_group
-        columns[0] = SqlAttributes.sanitize(@other_group)
+        columns[0] = SqlFunctions.sanitize(@other_group)
         @collection.where.not(@top_groups_conditions).group(columns[0]).pluck(*columns)
       else
         []

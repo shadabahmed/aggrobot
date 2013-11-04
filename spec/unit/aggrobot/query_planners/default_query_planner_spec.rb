@@ -34,7 +34,7 @@ module Aggrobot
         let(:grouped_relation) { double }
         before do
           query_planner.stub(:collection_is_none? => false)
-          SqlAttributes.stub(:count => 'count')
+          SqlFunctions.stub(:count => 'count')
           collection.should_receive(:group).with('group_col').and_return(grouped_relation)
           grouped_relation.should_receive(:pluck)
                           .with('group_col', 'count', 'extra_col1', 'extra_col2')

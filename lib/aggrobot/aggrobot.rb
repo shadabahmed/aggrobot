@@ -1,7 +1,7 @@
 module Aggrobot
   class Aggrobot
 
-    include SqlAttributes
+    include SqlFunctions
     include Helper
 
     delegate :collection, :group_by, :default_groups, :override, :set, :group_labels, :to => :@aggregator

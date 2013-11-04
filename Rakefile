@@ -12,7 +12,7 @@ namespace :spec do
 
   desc 'Run unit specs'
   RSpec::Core::RakeTask.new('unit') do |spec|
-    spec.pattern = FileList['spec/unit/**/stubs/*_spec.rb', 'spec/unit/*/*_spec.rb']
+    spec.pattern = FileList['spec/unit/**/*_spec.rb']
   end
 
   desc 'Run integration specs'

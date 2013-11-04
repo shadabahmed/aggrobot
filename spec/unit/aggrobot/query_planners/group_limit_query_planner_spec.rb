@@ -74,7 +74,7 @@ module Aggrobot
 
     describe '#query_results' do
       let(:columns) { ['group_col', 'COUNT(*)', 'col1', 'col2'] }
-      let(:other_columns) { ['others', 'COUNT(*)', 'col1', 'col2'] }
+      let(:other_columns) { ["'others'", 'COUNT(*)', 'col1', 'col2'] }
       subject(:query_planner) { GroupLimitQueryPlanner.new(collection, group, :limit_to => 2,
                                                            :sort_by => :order_col, :other_group => 'others') }
 
@@ -97,14 +97,13 @@ module Aggrobot
           should_receive_queries(collection, ['group1', 'group2'], :group => group, :order => 'order_col desc',
                                  :limit => 2, :pluck => group)
           query_planner.stub(:collection_is_none? => false)
-          ActiveRecord::Base.stub(:sanitize) { |x| x }
         end
 
         context 'with default options' do
           it 'returns top group results' do
             should_receive_queries(collection, [:results], :group => group, :where => conditions, :pluck => columns)
             should_receive_queries(collection, [:others], :where => nil, :not => conditions,
-                                   :group => 'others', :pluck => other_columns)
+                                   :group => "'others'", :pluck => other_columns)
             expect(query_planner.query_results(['col1', 'col2'])).to eq [:results, :others]
           end
         end
@@ -115,12 +114,11 @@ module Aggrobot
           let(:conditions) { {'group_col' => ['group1', 'always']} }
           before do
             query_planner.stub(:collection_is_none? => false)
-            ActiveRecord::Base.stub(:sanitize) { |x| x }
           end
           it 'returns top group results' do
             should_receive_queries(collection, [:results], :group => group, :where => conditions, :pluck => columns)
             should_receive_queries(collection, [:others], :where => nil, :not => conditions,
-                                   :group => 'others', :pluck => other_columns)
+                                   :group => "'others'", :pluck => other_columns)
             expect(query_planner.query_results(['col1', 'col2'])).to eq [:results, :others]
           end
         end

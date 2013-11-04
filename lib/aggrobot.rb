@@ -6,14 +6,14 @@ require 'aggrobot/helper'
 require 'aggrobot/query_planners/default_query_planner'
 require 'aggrobot/query_planners/group_limit_query_planner'
 require 'aggrobot/query_planners/default_groups_query_planner'
-require 'aggrobot/sql_attributes'
+require 'aggrobot/sql_functions'
 require 'aggrobot/aggregator'
 require 'aggrobot/aggrobot'
 
 
 module Aggrobot
 
-  DEFAULT_GROUP_BY = SqlAttributes.sanitize('aggrobot_default_group')
+  DEFAULT_GROUP_BY = SqlFunctions.sanitize('aggrobot_default_group')
 
   def self.start(collection = nil, block_arg = nil, block_opts = nil, &block)
     block_opts ||= block_arg if block
