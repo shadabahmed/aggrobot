@@ -1,16 +1,20 @@
-def add_should_receive_exp(obj, method, params, result)
+def add_expectations(obj, method, params)
   if params.is_a?(Array)
-    obj.should_receive(method).with(*params).and_return(result)
+    obj.should_receive(method).with(*params)
   elsif params.nil?
-    obj.should_receive(method).and_return(result)
+    obj.should_receive(method)
   else
-    obj.should_receive(method).with(params).and_return(result)
+    obj.should_receive(method).with(params)
   end
 end
 
-def should_receive_queries(obj, result, method_chain)
-  method_chain.each_with_index do |(method, params) , idx|
-    return_val = (idx + 1) == method_chain.size ? result : obj
-    add_should_receive_exp(obj, method, params, return_val)
+def should_receive_queries(obj, method_chain)
+  method_chain.each_with_index do |(method, params), idx|
+    if (idx + 1) == method_chain.size
+      return add_expectations(obj, method, params)
+    else
+      proxy = add_expectations(obj, method, params)
+      proxy.and_return(obj)
+    end
   end
 end

@@ -26,9 +26,8 @@ end
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|
   require 'aggrobot/version'
-  version = Aggrobot::VERSION
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = 'aggrobot #{version}'
+  rdoc.title = "aggrobot #{Aggrobot::VERSION}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
@@ -54,7 +53,7 @@ namespace :coverage do
   end
 
 
-  # Ruby 1.9+ using simplecov. Note: Simplecov config defined in spec_helper
+  # Ruby 1.9+ using simplecov
   desc "Code coverage unit"
   task :unit do
     ENV['COVERAGE'] = "unit"
