@@ -34,7 +34,7 @@ module Aggrobot
     end
 
     def group_by(group, opts = nil)
-      raise_error "Group_by takes only symbol or a string as argument" unless attr.is_a?(Symbol) or attr.is_a?(String)
+      raise_error "Group_by takes only symbol or a string as argument" unless group.is_a?(Symbol) or group.is_a?(String)
       @query_planner = QueryPlanners.create(@collection, group, opts)
     end
 

@@ -1,5 +1,4 @@
 module Aggrobot
-
   module QueryPlanners
     class GroupLimitQueryPlanner < DefaultQueryPlanner
 
