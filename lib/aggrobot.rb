@@ -1,3 +1,4 @@
+require 'aggrobot/railtie'
 require 'active_support/core_ext/module/delegation.rb'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'aggrobot/version'
@@ -26,6 +27,10 @@ module Aggrobot
 
   def self.block(&block)
     block
+  end
+
+  def self.setup(app)
+    SqlFunctions.const_set(:ROUNDING_DIGITS, app.config.aggrobot.percent_precision || 2)
   end
 
 end

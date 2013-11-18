@@ -2,8 +2,6 @@ module Aggrobot::SqlFunctions
 
   extend self
 
-  ROUNDING_DIGITS = 2
-
   def sanitize(attr)
     "'#{attr}'"
   end
