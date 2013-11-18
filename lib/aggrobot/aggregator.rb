@@ -5,7 +5,6 @@ module Aggrobot
 
     def initialize(collection)
       @collection = collection
-      @group = DEFAULT_GROUP_BY
       @group_name_attribute, @count_attribute = :name, :count
       @group_labels_map = {}
       @attribute_mapping = {}
@@ -34,25 +33,9 @@ module Aggrobot
       end
     end
 
-    def group_by(attr = nil, opts = nil)
-      if attr
-        raise_error "Group_by takes only symbol or a string as argument" unless attr.is_a?(Symbol) or attr.is_a?(String)
-        @group = attr
-        if opts.is_a?(Hash)
-          @query_planner = GroupLimitQueryPlanner.new(@collection, @group, opts)
-        end
-      else
-        @group
-      end
-    end
-
-    def default_groups(groups = nil, opts = {})
-      if groups
-        @default_groups = groups
-        @query_planner = DefaultGroupsQueryPlanner.new(@collection, @group, groups, opts)
-      else
-        @default_groups
-      end
+    def group_by(group, opts = nil)
+      raise_error "Group_by takes only symbol or a string as argument" unless attr.is_a?(Symbol) or attr.is_a?(String)
+      @query_planner = QueryPlanners.create(@collection, group, opts)
     end
 
     def override(attr, override_attr = false)
@@ -74,11 +57,13 @@ module Aggrobot
       end
     end
 
-    def yield_results
-      @query_planner ||= DefaultQueryPlanner.new(@collection, @group)
+    def query_planner
+      @query_planner ||= QueryPlanners.create(@collection, DEFAULT_GROUP_BY)
+    end
 
+    def yield_results
       # yield on actual query results
-      @query_planner.query_results(extra_columns).each do |real_group_name, count, *rest|
+      query_planner.query_results(extra_columns).each do |real_group_name, count, *rest|
         mapped_group_name = @group_labels_map[real_group_name] || real_group_name
         relation = @query_planner.sub_query(real_group_name)
         yield(mapped_attributes(mapped_group_name, count, rest), mapped_group_name, relation)
