@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'aggrobot/sql_functions'
 
 module Aggrobot
-  module QueryPlanners
+  module QueryPlanner
 
     describe DefaultQueryPlanner do
       let(:collection) { double }

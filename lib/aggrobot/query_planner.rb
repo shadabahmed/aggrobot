@@ -1,13 +1,13 @@
-require 'aggrobot/query_planners/default_query_planner'
-require 'aggrobot/query_planners/group_limit_query_planner'
-require 'aggrobot/query_planners/bucketed_groups_query_planner'
+require 'aggrobot/query_planner/default_query_planner'
+require 'aggrobot/query_planner/group_limit_query_planner'
+require 'aggrobot/query_planner/bucketed_groups_query_planner'
 
-module Aggrobot::QueryPlanners
+module Aggrobot::QueryPlanner
 
-  def self.create_query_planner(collection, group_by, opts)
+  def self.create(collection, group_by, opts)
     case
-    when opts.is_nil?
-      DefaultQueryPlanne.new(collection, group_by)
+    when opts.nil?
+      DefaultQueryPlanner.new(collection, group_by)
     when opts.key?(:limit_to)
       GroupLimitQueryPlanner.new(collection, group_by, opts)
     when opts.key?(:buckets)

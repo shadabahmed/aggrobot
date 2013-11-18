@@ -4,7 +4,7 @@ require 'aggrobot/version'
 require 'aggrobot/aggrobot_error'
 require 'aggrobot/helper'
 require 'aggrobot/sql_functions'
-require 'aggrobot/query_planners'
+require 'aggrobot/query_planner'
 require 'aggrobot/aggregator'
 require 'aggrobot/aggrobot'
 

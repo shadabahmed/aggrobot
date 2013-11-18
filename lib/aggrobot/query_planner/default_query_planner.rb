@@ -1,5 +1,5 @@
 module Aggrobot
-  module QueryPlanners
+  module QueryPlanner
     class DefaultQueryPlanner
       include Aggrobot::Helper
 

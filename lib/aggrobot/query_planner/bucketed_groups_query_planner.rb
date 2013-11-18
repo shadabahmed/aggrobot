@@ -1,12 +1,12 @@
 module Aggrobot
-  module QueryPlanners
+  module QueryPlanner
     class BucketedGroupsQueryPlanner < DefaultQueryPlanner
 
-      def initialize(collection, group, default_groups, opts = {})
+      def initialize(collection, group, opts = {})
         ParametersValidator.validate_options(opts, [:buckets], [:keep_empty])
         raise_error 'Need to set group first' unless group
         super(collection, group)
-        create_query_map(default_groups)
+        create_query_map(opts[:buckets])
         @keep_empty = opts[:keep_empty]
       end
 

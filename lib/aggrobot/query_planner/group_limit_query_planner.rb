@@ -1,5 +1,5 @@
 module Aggrobot
-  module QueryPlanners
+  module QueryPlanner
     class GroupLimitQueryPlanner < DefaultQueryPlanner
 
       def initialize(collection, group, opts)

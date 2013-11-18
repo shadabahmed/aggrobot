@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Aggrobot
-  module QueryPlanners
+  module QueryPlanner
     describe GroupLimitQueryPlanner do
       let(:collection) { double }
       let(:group) { 'group_col' }
