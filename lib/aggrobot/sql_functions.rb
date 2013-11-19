@@ -38,7 +38,7 @@ module Aggrobot::SqlFunctions
     "GROUP_CONCAT(DISTINCT #{attr})"
   end
 
-  def percent(attr = count, total, rounding = ROUNDING_DIGITS)
+  def percent(attr = count, total = 0, rounding = ROUNDING_DIGITS)
     total == 0 ? "0" : "ROUND((#{attr}*100.0)/#{total}, #{rounding})"
   end
 
