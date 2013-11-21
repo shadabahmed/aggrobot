@@ -3,7 +3,7 @@ module Aggrobot
     class GroupLimitQueryPlanner < DefaultQueryPlanner
 
       def initialize(collection, group, opts)
-        ParametersValidator.validate_options(opts, [:limit_to, :sort_by], [:always_include, :other_group, :order, :always_include_at])
+        ParametersValidator.validate_options(opts, [:limit_to, :sort_by], [:always_include, :other_group, :order])
         raise_error 'limit_to has to be a number' unless opts[:limit_to].is_a?(Fixnum)
         super(collection, group)
         @query_map = {}
@@ -43,9 +43,9 @@ module Aggrobot
       def process_top_groups_options(opts)
         opts[:order] ||= 'desc'
         top_groups = calculate_top_groups(opts)
-        if always_include_group = opts[:always_include]
-          top_groups.delete(always_include_group) || top_groups.pop
-          top_groups.insert(opts[:always_include_at] || 0, always_include_group)
+        if !top_groups.include?(opts[:always_include])
+          top_groups.pop
+          top_groups << opts[:always_include]
         end
         @top_groups_conditions = {@group => top_groups}
         @other_group = opts[:other_group]
