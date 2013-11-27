@@ -43,7 +43,7 @@ module Aggrobot
       def process_top_groups_options(opts)
         opts[:order] ||= 'desc'
         top_groups = calculate_top_groups(opts)
-        if !top_groups.include?(opts[:always_include])
+        if opts[:always_include] && !top_groups.include?(opts[:always_include])
           top_groups.pop
           top_groups << opts[:always_include]
         end
