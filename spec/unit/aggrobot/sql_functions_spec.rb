@@ -1,7 +1,15 @@
 require 'spec_helper'
+require 'aggrobot/sql_functions'
 
 module Aggrobot
+
   describe SqlFunctions do
+    before do
+      module SqlFunctions
+        ROUNDING_DIGITS = 2
+      end
+    end
+
     describe '.sql_attr' do
       it 'returns an escaped sql attribute' do
         expect(SqlFunctions.desc('attr')).to eq 'attr desc'
@@ -52,7 +60,17 @@ module Aggrobot
 
     describe '.percent' do
       it 'calculate percent' do
-        expect(SqlFunctions.percent('attr', 100)).to eq "ROUND((attr*100.0)/100, #{SqlFunctions::ROUNDING_DIGITS})"
+        expect(SqlFunctions.percent('attr', 100)).to eq "ROUND((100*100.0)/attr, #{SqlFunctions::ROUNDING_DIGITS})"
+      end
+
+      it 'calculate percent with default params' do
+        expect(SqlFunctions.percent('attr')).to eq "ROUND((COUNT(*)*100.0)/attr, #{SqlFunctions::ROUNDING_DIGITS})"
+      end
+    end
+
+    describe '.mysql' do
+      it 'multiplies' do
+        expect(SqlFunctions.multiply('attr', 100, 2)).to eq 'ROUND(attr*100, 2)'
       end
     end
 
