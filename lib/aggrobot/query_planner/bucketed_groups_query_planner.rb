@@ -10,7 +10,6 @@ module Aggrobot
         @keep_empty = opts[:keep_empty]
       end
 
-
       def sub_query(group_name)
         @query_map[group_name]
       end
