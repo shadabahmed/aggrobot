@@ -15,7 +15,7 @@ module Aggrobot
       end
 
       def query_results(extra_cols = [])
-        return empty_default_groups if collection_is_none?
+        return empty_buckets if collection_is_none?
         results = collect_query_results(extra_cols)
         results.reject! { |r| r[1] == 0 } unless @keep_empty
         results
@@ -34,7 +34,7 @@ module Aggrobot
         end
       end
 
-      def empty_default_groups
+      def empty_buckets
         @keep_empty ? @query_map.keys.collect { |k| [k, 0] } : []
       end
 
