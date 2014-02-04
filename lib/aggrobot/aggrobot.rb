@@ -19,12 +19,14 @@ module Aggrobot
       @caller_context.send method, *args, &block
     end
 
+    # creates top level data structure as hash and call block to process further
     def hash(collection = nil, opts = {}, &block)
       self.collection(collection) if collection
       @top_level_object = ActiveSupport::HashWithIndifferentAccess.new
       proceed(block, opts)
     end
 
+    # creates top level data structure as array and call block to process further
     def list(collection = nil, opts = {}, &block)
       self.collection(collection) if collection
       @top_level_object = []
