@@ -11,7 +11,7 @@ module Aggrobot
       self.collection(collection) if collection
     end
 
-
+    # returns hash of group label(s) as key and actual column(s) as value 
     def group_labels(map = nil, &block)
       if map || block
         if map.is_a?(Hash)
@@ -24,6 +24,9 @@ module Aggrobot
       end
     end
 
+    # returns collection if it is ActiveRecord::Relation or ActiveRecord::Base
+    # raises error when collection is none of the above
+    # returns @collection otherwise (which is nil)
     def collection(values = nil)
       if values
         raise_error 'Collection should be an ActiveRecord::Relation or ActiveRecord::Base' unless
@@ -34,6 +37,10 @@ module Aggrobot
       end
     end
 
+    # when 
+    #     : opts is nil, groups by group on @collection
+    #     : opts is a map as {limit_to: limit}, creats groups by group on @collection with a limit
+    #     : opts is a map as {buckets: [list_items]}, creats groups by [list_items] on @collection
     def group_by(group, opts = nil)
       raise_error "Group_by takes only symbol or a string as argument" unless group.is_a?(Symbol) or group.is_a?(String)
       @query_planner = QueryPlanner.create(@collection, group, opts)
@@ -50,6 +57,10 @@ module Aggrobot
       end
     end
 
+    # creates attribute map
+    # when: 
+    #     given as hash, sets all keys as attributes to show and values as columns to fetch
+    #     given as list (of 2 items), first item is key to show and second item is column to fetch
     def set(name = nil, opts)
       if opts.is_a? Hash
         @attribute_mapping.merge!(opts)

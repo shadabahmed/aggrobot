@@ -14,6 +14,9 @@ module Aggrobot
 
   DEFAULT_GROUP_BY = SqlFunctions.sanitize('aggrobot_default_group')
 
+  # when
+  #     collection is given, starts aggregation by evaluating block on collection
+  #     collection is not given, starts aggregation by evaluating block on full data set
   def self.start(collection = nil, block_arg = nil, block_opts = nil, &block)
     block_opts ||= block_arg if block
     block = block_arg if block_arg && block_arg.respond_to?(:call)
@@ -29,6 +32,7 @@ module Aggrobot
     block
   end
 
+  # sets ROUNDING_DIGITS to percent_precision, default is 2
   def self.setup(app)
     SqlFunctions.const_set(:ROUNDING_DIGITS, app.config.aggrobot.percent_precision || 2)
   end
