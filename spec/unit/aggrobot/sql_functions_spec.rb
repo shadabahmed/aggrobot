@@ -14,6 +14,9 @@ module Aggrobot
       it 'returns an escaped sql attribute' do
         expect(SqlFunctions.desc('attr')).to eq 'attr desc'
       end
+      it 'returns an escaped sql attribute to order asc' do
+        expect(SqlFunctions.asc('attr')).to eq 'attr asc'
+      end
     end
 
     describe '.count' do
