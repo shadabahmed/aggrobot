@@ -4,7 +4,7 @@ require 'aggrobot/sql_functions'
 module Aggrobot
 
   describe SqlFunctions do
-    before do
+    before(:all) do
       module SqlFunctions
         ROUNDING_DIGITS = 2
       end
