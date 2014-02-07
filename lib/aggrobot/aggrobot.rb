@@ -33,6 +33,7 @@ module Aggrobot
       proceed(block, opts)
     end
 
+    # sets default/current values to top_level_object hash/list
     def default(default_val = nil, &block)
       block = block_from_args(default_val, block, false)
       default_val = ::Aggrobot.start(collection, &block) if block
@@ -41,6 +42,7 @@ module Aggrobot
 
     alias set_current_value default
 
+    # sets default group attrs as a hash, if opts is passed as param
     def default_group_attrs(opts = nil)
       if opts
         raise_error 'Arguments must be  a hash' unless opts.is_a?(Hash)
@@ -50,10 +52,13 @@ module Aggrobot
       end
     end
 
+    # returns top level object hash/list
     def current_value
       @top_level_object
     end
 
+    # starts aggrobot on collection and block, when block is given and
+    # adds {attribute: value} pair to the top level object
     def attr(attribute, value = nil, &block)
       block = block_from_args(value, block, false)
       raise_error 'attr can only be used with a hash type' unless @top_level_object.is_a?(Hash)
@@ -63,6 +68,7 @@ module Aggrobot
       @top_level_object[attribute] = value
     end
 
+    # gets attribute's value from top level object, only works when top level is hash
     def get_attr(attribute)
       @top_level_object[attribute]
     end
