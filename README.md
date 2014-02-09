@@ -1,6 +1,6 @@
 # Aggrobot
 
-TODO: Write a gem description
+Aggrobot is DSL to simplify aggergation queries on collections, e.g. grouping, bucketing and aggregating(avg, sum, add, multiply, divide, percent, etc). It is a wrapper on top of active_record, to allow you write complex queries with ease in an easy to understand DSL.
 
 ## Installation
 
@@ -19,6 +19,7 @@ Or install it yourself as:
 ## Usage
 
 TODO: Write usage instructions here
+TODO: Write example usage here
 
 ## Contributing
 

@@ -13,6 +13,10 @@ module Aggrobot
       "#{attr} desc"
     end
 
+    def asc(attr)
+      "#{attr} asc"
+    end
+
     def count(attr = '*')
       "COUNT(#{attr})"
     end

@@ -4,7 +4,7 @@ require 'aggrobot/sql_functions'
 module Aggrobot
 
   describe SqlFunctions do
-    before do
+    before(:all) do
       module SqlFunctions
         ROUNDING_DIGITS = 2
       end
@@ -13,6 +13,9 @@ module Aggrobot
     describe '.sql_attr' do
       it 'returns an escaped sql attribute' do
         expect(SqlFunctions.desc('attr')).to eq 'attr desc'
+      end
+      it 'returns an escaped sql attribute to order asc' do
+        expect(SqlFunctions.asc('attr')).to eq 'attr asc'
       end
     end
 
