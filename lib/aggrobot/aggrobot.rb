@@ -6,8 +6,8 @@ module Aggrobot
 
     delegate :collection, :group_by, :default_groups, :override, :set, :group_labels, :to => :@aggregator
 
-    def run(block)
-      instance_eval(&block)
+    def run(block, args = {})
+      instance_exec(args, &block)
     end
 
     def initialize(caller_context, collection = nil)
