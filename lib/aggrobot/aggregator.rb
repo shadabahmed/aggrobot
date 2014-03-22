@@ -30,7 +30,7 @@ module Aggrobot
     def collection(values = nil)
       if values
         raise_error 'Collection should be an ActiveRecord::Relation or ActiveRecord::Base' unless
-            [ActiveRecord::Relation, ActiveRecord::Base].any?{|m| values.is_a?(m) }
+            [ActiveRecord::Relation, ActiveRecord::Base].any?{|m| values.is_a?(m) or values < m}
         @collection = values
       else
         @collection
