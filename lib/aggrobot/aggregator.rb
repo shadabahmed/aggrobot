@@ -29,8 +29,8 @@ module Aggrobot
     # returns @collection otherwise (which is nil)
     def collection(values = nil)
       if values
-        raise_error 'Collection should be an ActiveRecord::Relation or ActiveRecord::Base' unless
-            [ActiveRecord::Relation, ActiveRecord::Base].any?{|m| values.is_a?(m) or values < m}
+        values = values.unscoped if values < ActiveRecord::Base
+        raise_error 'Collection should be an ActiveRecord::Relation or ActiveRecord::Base' unless values.is_a?(ActiveRecord::Relation)
         @collection = values
       else
         @collection
