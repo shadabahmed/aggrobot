@@ -1,6 +1,10 @@
 # Aggrobot
 
-Aggrobot is DSL to simplify aggergation queries on collections, e.g. grouping, bucketing and aggregating(avg, sum, add, multiply, divide, percent, etc). It is a wrapper on top of active_record, to allow you write complex queries with ease in an easy to understand DSL.
+Aggrobot is an aggregation framework in Ruby. It provides a powerfule DSL to perform aggregations over large dataset. It has been tested to work with MySQL, Postgres and SQLite. 
+
+Many other features such as bucketing, grouping over top **n groups** and **others** and sub-aggregations (avg, sum, add, multiply, divide, percent, etc) on columns are also provided. All the aggregations are calculated in the database and only the aggregated data is sent over to Ruby, to keep it performant.
+
+Aggrobot also allows nested aggregations and each level of sub-aggregation can be passed around as a code block and used in higher level aggregations. This provides great amount of code-reuse.
 
 ## Installation
 
