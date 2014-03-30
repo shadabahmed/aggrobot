@@ -1,10 +1,15 @@
 # Aggrobot
 
-Aggrobot is an aggregation framework in Ruby. It provides a powerfule DSL to perform aggregations over large dataset. It has been tested to work with MySQL, Postgres and SQLite. 
+Aggrobot is an aggregation framework in Ruby. It provides a powerful DSL to perform aggregations over large dataset. It has been tested to work with MySQL, Postgres and SQLite. 
 
-Many other features such as bucketing, grouping over top **n groups** and **others** and sub-aggregations (avg, sum, add, multiply, divide, percent, etc) on columns are also provided. All the aggregations are calculated in the database and only the aggregated data is sent over to Ruby, to keep it performant.
+Many other features are provided:
+* Bucketing over data ranges. For e.g. grouping orders over price ranges like 100-200, 200-300 and 300+
+* Grouping over top **n groups**. For e.g. group top 2 selling products based on quantity, while group rest of the products in a single bucket of **others**
+*  Sub-aggregations (avg, sum, add, multiply, divide, percent, etc) on columns are also provided.
 
-Aggrobot also allows nested aggregations and each level of sub-aggregation can be passed around as a code block and used in higher level aggregations. This provides great amount of code-reuse.
+All the aggregations are calculated in the database and only the aggregated data is sent over to Ruby, to keep it performant. This greatly speeds up performance and reduces the memory requirement, had the aggregations been done directly in Ruby.
+
+Aggrobot also allows nested aggregations and each level of aggregation can be passed around as a code block and used in higher level aggregations. This provides great amount of code-reuse.
 
 ## Installation
 
