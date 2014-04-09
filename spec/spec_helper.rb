@@ -12,7 +12,7 @@ if ENV['COVERAGE']
   end
 end
 
-# Modify load path so you can require 'mckinsey_external_ad' directly.
+# Modify load path so you can require 'aggrobot' directly.
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'rubygems'
