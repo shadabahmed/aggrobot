@@ -1,66 +1,27 @@
+require_relative './sql_functions/common'
+
 module Aggrobot
+  module SQLFunctions
 
-  # Collection of methods for SQL functions
-  module SqlFunctions
+    autoload :MySQL,  File.expand_path('../sql_functions/mysql', __FILE__)
+    autoload :PgSQL, File.expand_path('../sql_functions/pgsql', __FILE__)
+    autoload :SQLite, File.expand_path('../sql_functions/sqlite', __FILE__)
 
-    extend self
+    POSTGRES_ADAPTER_NAME = 'PostgreSQL'
+    SQLITE_ADAPTER_NAME = 'SQLite'
+    MYSQL_ADAPTER_NAME = 'Mysql2'
 
-    def sanitize(attr)
-      "'#{attr}'"
-    end
-
-    def desc(attr)
-      "#{attr} desc"
-    end
-
-    def asc(attr)
-      "#{attr} asc"
-    end
-
-    def count(attr = '*')
-      "COUNT(#{attr})"
-    end
-
-    def unique_count(attr = '*')
-      "COUNT(DISTINCT #{attr})"
-    end
-
-    def max(attr)
-      "MAX(#{attr})"
-    end
-
-    def min(attr)
-      "MIN(#{attr})"
-    end
-
-    def sum(attr = count)
-      "SUM(#{attr})"
-    end
-
-    # returns ROUNDED average of attr, with precision(ROUNDING DIGITS)
-    def avg(attr, rounding = ROUNDING_DIGITS)
-      "ROUND(AVG(#{attr}), #{rounding})"
-    end
-
-    # GROUP_CONCAT: A SQL function which returns a concatenated string
-    # group_collect returns concatenated string of distinct attr
-    def group_collect(attr)
-      "GROUP_CONCAT(DISTINCT #{attr})"
-    end
-
-    # returns percentage based on ROUND SQL function, with precision(ROUNDING DIGITS)
-    def percent(total, attr = count, rounding = ROUNDING_DIGITS)
-      total == 0 ? "0" : "ROUND((#{attr}*100.0)/#{total}, #{rounding})"
-    end
-
-    # returns ROUND of multipliers, with precision(ROUNDING_DIGITS)
-    def multiply(attr, multiplier, rounding = ROUNDING_DIGITS)
-      "ROUND(#{attr}*#{multiplier}, #{rounding})"
-    end
-
-    # returns ROUND of attr/divider, with precision(ROUNDING_DIGITS)
-    def divide(attr, divider, rounding = ROUNDING_DIGITS)
-      "ROUND(#{attr}/#{divider}, #{rounding})"
+    def self.setup(precision = 2, adapter = ActiveRecord::Base.connection.adapter_name)
+      extend Common
+      self.precision = precision
+      adapter_module = case adapter
+                         when POSTGRES_ADAPTER_NAME then PgSQL
+                         when MYSQL_ADAPTER_NAME then MySQL
+                         when SQLITE_ADAPTER_NAME then SQLite
+                    else
+                      raise Exception.new "Database adaptor not supported: #{ActiveRecord::Base.connection.adapter_name}"
+                    end
+      extend adapter_module
     end
 
   end

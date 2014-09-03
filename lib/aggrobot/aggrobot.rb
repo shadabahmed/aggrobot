@@ -1,10 +1,10 @@
 module Aggrobot
   class Aggrobot
-
-    include SqlFunctions
     include Helper
 
-    delegate :collection, :group_by, :default_groups, :override, :set, :group_labels, :to => :@aggregator
+    delegate :collection, :group_by, :default_groups, :override, :select, :group_labels, :to => :@aggregator
+    delegate :count,:sanitize, :desc, :asc, :count, :unique_count, :max, :min, :sum, :avg, :average,
+             :group_collect, :percent, :multiply, :divide, :to => SQLFunctions
 
     def run(block, args = {})
       instance_exec(args, &block)
@@ -52,6 +52,8 @@ module Aggrobot
       end
     end
 
+    alias default_values default_group_attrs
+
     # returns top level object hash/list
     def current_value
       @top_level_object
@@ -73,22 +75,23 @@ module Aggrobot
       @top_level_object[attribute]
     end
 
-    def collect_each_group_attributes
-      each_group do |attr|
-        attr
-      end
-    end
-
     def each_group(block_arg = nil, &block)
-      block = block_from_args(block_arg, block)
+      block = block_from_args(block_arg, block, false)
       @aggregator.yield_results do |attrs, group_name, sub_collection|
         attrs = @default_group_attrs.merge(attrs) if @default_group_attrs
         block_value = ::Aggrobot.start(sub_collection) do
-          instance_exec(attrs, &block)
+          if block
+            instance_exec(attrs, &block)
+          else
+            attrs
+          end
         end
         update_top_level_obj(group_name, block_value)
       end
     end
+
+    alias iterate each_group
+    alias recurse each_group
 
     def evaluate(block_arg = nil, &block)
       block = block_from_args(block_arg, block)

@@ -3,15 +3,17 @@ module Aggrobot
     class BucketedGroupsQueryPlanner < DefaultQueryPlanner
 
       def initialize(collection, group, opts = {})
-        ParametersValidator.validate_options(opts, [:buckets], [:keep_empty])
+        required_params = [:buckets]
+        optional_params = [:keep_empty]
+        validate_options(opts, required_params, optional_params)
         raise_error 'Need to set group first' unless group
         super(collection, group)
         create_query_map(opts[:buckets])
         @keep_empty = opts[:keep_empty]
       end
 
-      def sub_query(group_name)
-        @query_map[group_name]
+      def sub_query(group_value)
+        @query_map[group_value]
       end
 
       def query_results(extra_cols = [])
@@ -24,13 +26,14 @@ module Aggrobot
       private
 
       def collect_query_results(extra_cols)
-        columns = ['', SqlFunctions.count] + extra_cols
-        @query_map.collect do |group_name, query|
-          sanitized_group_name = SqlFunctions.sanitize(group_name)
-          columns[0] = sanitized_group_name
-          results = query.group(sanitized_group_name).limit(1).pluck(*columns).first
-          @query_map[group_name] = @query_map[group_name].none unless results
-          results || [group_name, 0]
+        columns = [SQLFunctions.count] + extra_cols
+        @query_map.collect do |group_value, query|
+          results = query.limit(1).pluck(*columns).flatten
+          if results[0] == 0
+            @query_map[group_value] = @query_map[group_value].none
+            results = [0]
+          end
+          results.unshift(group_value)
         end
       end
 
@@ -38,10 +41,10 @@ module Aggrobot
         @keep_empty ? @query_map.keys.collect { |k| [k, 0] } : []
       end
 
-      def create_query_map(groups)
+      def create_query_map(buckets)
         @query_map = {}
-        groups.each do |group|
-          @query_map[group.to_s] = @collection.where(@group => group)
+        buckets.each do |bucket|
+          @query_map[bucket] = @collection.where(group_condition(bucket))
         end
       end
 

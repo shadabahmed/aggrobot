@@ -63,7 +63,7 @@ module Aggrobot
     # when: 
     #     given as hash, sets all keys as attributes to show and values as columns to fetch
     #     given as list (of 2 items), first item is key to show and second item is column to fetch
-    def set(name = nil, opts)
+    def select(name = nil, opts)
       if opts.is_a? Hash
         @attribute_mapping.merge!(opts)
       elsif name && opts
@@ -87,7 +87,7 @@ module Aggrobot
     private
 
     def extra_columns
-      @attribute_mapping.values
+      @attribute_mapping.map{|k, v| "#{v} as #{k}"}
     end
 
     def extra_attributes

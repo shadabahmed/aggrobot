@@ -4,90 +4,77 @@ module Aggrobot
   module QueryPlanner
 
     describe BucketedGroupsQueryPlanner do
+      before :all do
+        FactoryRobot.start(:users) do
+          count 400
+          name  4 => 'Tom', 7 => 'Hardy', 9 => 'Dark', 10 => 'Knight'
+          age   4 => 20, 7 => 40, 9 => 60, 10 => 80
+          score 4 => 100, 7 => 200, 9 => 300, 10 => 400
+        end
+      end
 
-      let(:collection) { double }
-      let(:group) { 'group_col' }
-      let(:buckets) { [1..2, [3, 4, 5], 8, 9] }
-      subject(:query_planner) { BucketedGroupsQueryPlanner.new(collection, group, buckets: buckets) }
+
+      let(:buckets) { [100, 200..299, 300..399, 400] }
+      subject(:query_planner) { BucketedGroupsQueryPlanner.new(User, :score, buckets: buckets) }
+
+      context 'initialization' do
+        it 'requires explicit parameters' do
+          expect { BucketedGroupsQueryPlanner.new(User, :name) }.to raise_error(ArgumentError)
+          expect { BucketedGroupsQueryPlanner.new(User, :name, :keep_empty => true) }.to raise_error(ArgumentError)
+          expect { BucketedGroupsQueryPlanner.new('User', :name, :buckets => buckets, :keep_empty => true) }.to raise_error(ArgumentError)
+          expect { BucketedGroupsQueryPlanner.new(User, :name, :buckets => buckets, :keep_empty => true) }.to_not raise_error
+        end
+      end
 
       describe '#sub_query' do
-        before do
-          collection.stub(:where).with('group_col' => 1..2).and_return('collection for 1..2')
-          collection.stub(:where).with('group_col' => [3,4,5]).and_return('collection for 3,4,5')
-          collection.stub(:where).with('group_col' => 8).and_return('collection for 8')
-          collection.stub(:where).with('group_col' => 9).and_return('collection for 9')
+        let(:sub_query) { 'SELECT "users".* FROM "users"  WHERE "users"."score" = 100'}
+        it 'returns the correct subquery' do
+          expect(query_planner.sub_query(100).to_sql).to eq sub_query
         end
 
-        it 'returns the correct subquery' do
-          expect(query_planner.sub_query((1..2).to_s)).to eq 'collection for 1..2'
-          expect(query_planner.sub_query([3,4,5].to_s)).to eq 'collection for 3,4,5'
-          expect(query_planner.sub_query(8.to_s)).to eq 'collection for 8'
-          expect(query_planner.sub_query(9.to_s)).to eq 'collection for 9'
+        context 'group on multiple columns' do
+          let(:buckets) { [['Tim',1..2], ['Black', [3, 4, 5]], ['Knight',[8, 9]]] }
+          subject(:query_planner) { BucketedGroupsQueryPlanner.new(User, [:name, :score], buckets: buckets) }
+          let(:sub_query) { 'SELECT "users".* FROM "users"  WHERE "users"."name" = \'Tim\' AND ("users"."score" BETWEEN 1 AND 2)'}
+          it 'returns the correct subquery' do
+            expect(query_planner.sub_query(['Tim',1..2]).to_sql).to eq sub_query
+          end
         end
       end
 
       describe '#query_results' do
-        let(:bucketed_relation) { double }
-        before do
-          collection.stub(:where).and_return(bucketed_relation)
-        end
 
         context 'collection is none' do
-          before do
-            query_planner.stub(:collection_is_none? => true, :empty_default_groups => [])
-          end
+          subject(:query_planner) { BucketedGroupsQueryPlanner.new(User.unscoped.none, :score, buckets: buckets) }
           it 'returns empty result set' do
             expect(query_planner.query_results).to be_empty
           end
         end
 
         context 'collection is not none' do
-          before do
-            query_planner.stub(:collection_is_none? => false)
-            should_receive_queries(bucketed_relation, :group => SqlFunctions.sanitize((1..2).to_s), limit: 1,
-                pluck: [SqlFunctions.sanitize((1..2).to_s), SqlFunctions.count, :col1, :col2])
-                .and_return(['results for 1..2'])
-            should_receive_queries(bucketed_relation, :group => SqlFunctions.sanitize([3,4,5].to_s), limit: 1,
-                                   pluck: [SqlFunctions.sanitize([3,4,5].to_s), SqlFunctions.count, :col1, :col2])
-            .and_return(['results for 3,4,5'])
-            should_receive_queries(bucketed_relation, :group => SqlFunctions.sanitize(8.to_s), limit: 1,
-                                   pluck: [SqlFunctions.sanitize(8.to_s), SqlFunctions.count, :col1, :col2])
-            .and_return(['results for 8'])
-            should_receive_queries(bucketed_relation, :group => SqlFunctions.sanitize(9.to_s), limit: 1,
-                                   pluck: [SqlFunctions.sanitize(9.to_s), SqlFunctions.count, :col1, :col2])
-            .and_return(['results for 9'])
-          end
-          it 'returns empty result set' do
-            expect(query_planner.query_results([:col1, :col2])).to eq ["results for 1..2", "results for 3,4,5",
-                                                                       "results for 8", "results for 9"]
+          let(:results) { [[100, 160, 3200, 100.0], [200..299, 120, 4800, 200.0], [300..399, 80, 4800, 300.0], [400, 40, 3200, 400.0]] }
+          it 'returns correct result set' do
+            expect(query_planner.query_results([SQLFunctions.sum(:age), SQLFunctions.average(:score)])).to eq results
           end
         end
 
         context 'empty buckets' do
-          before do
-            query_planner.stub(:collection_is_none? => false)
-            should_receive_queries(bucketed_relation, :group => SqlFunctions.sanitize(:populated.to_s), limit: 1,
-                                   pluck: [SqlFunctions.sanitize(:populated.to_s), SqlFunctions.count, :col1, :col2])
-            .and_return(['results for populated group'])
-
-            should_receive_queries(bucketed_relation, :group => SqlFunctions.sanitize(:empty.to_s), limit: 1,
-                                   pluck: [SqlFunctions.sanitize(:empty.to_s), SqlFunctions.count, :col1, :col2])
-            .and_return([])
-            bucketed_relation.stub(:none)
-          end
           context 'without keep_empty option' do
-            subject(:query_planner) { BucketedGroupsQueryPlanner.new(collection, group, buckets: [:populated, :empty]) }
+            let(:results){ [['Knight', 40, 3200, 400.0]] }
+            subject(:query_planner) { BucketedGroupsQueryPlanner.new(User, :name, buckets: ['Batman', 'Knight']) }
             it 'returns only populated result set' do
-              expect(query_planner.query_results([:col1, :col2])).to eq ["results for populated group"]
+              expect(query_planner.query_results([SQLFunctions.sum(:age), SQLFunctions.average(:score)])).to eq results
             end
           end
 
           context 'with keep_empty option' do
-            subject(:query_planner) { BucketedGroupsQueryPlanner.new(collection, group, buckets: [:populated, :empty], keep_empty: true) }
-            it 'returns both empty and populated result sets' do
-              expect(query_planner.query_results([:col1, :col2])).to eq ["results for populated group", ["empty", 0]]
+            let(:results){ [['Batman', 0], ['Knight', 40, 3200, 400.0]] }
+            subject(:query_planner) { BucketedGroupsQueryPlanner.new(User, :name, buckets: ['Batman', 'Knight'], keep_empty: true) }
+            it 'returns only populated result set' do
+              expect(query_planner.query_results([SQLFunctions.sum(:age), SQLFunctions.average(:score)])).to eq results
             end
           end
+
         end
       end
 

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['shadab.ansari@gmail.com']
   spec.description   = %q{Easy and performant aggregation for rails}
   spec.summary       = %q{Rails aggregation library}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/shadabahmed/aggrobot'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
@@ -18,9 +18,17 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'rails', '~> 4.0'
+  spec.add_dependency 'rails', '>=4.0'
+  spec.add_dependency 'activerecord', '>=4.0'
+  spec.add_dependency 'arel'
+
+  spec.required_ruby_version = '>= 1.9.3'
+
   spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency('rspec', ['~> 2.14.1'])
   spec.add_development_dependency('rdoc')
+  spec.add_development_dependency('factory_girl')
+  spec.add_development_dependency('database_cleaner')
 end
