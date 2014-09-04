@@ -1,5 +1,5 @@
 module Aggrobot
-  module SQLFunctions
+  class SQLFunctions
     module SQLite
     end
   end

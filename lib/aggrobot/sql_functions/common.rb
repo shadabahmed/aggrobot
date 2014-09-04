@@ -1,5 +1,5 @@
 module Aggrobot
-  module SQLFunctions
+  class SQLFunctions
     module Common
       delegate :sanitize, to: ActiveRecord::Base
       mattr_accessor :precision
