@@ -33,7 +33,7 @@ module Aggrobot
       end
 
       # returns ROUNDED average of attr, with precision(ROUNDING DIGITS)
-      def avg(attr, rounding = self.precision)
+      def avg(attr, rounding = SQLFunctions.precision)
         "ROUND(AVG(#{attr}), #{rounding})"
       end
 
@@ -46,17 +46,17 @@ module Aggrobot
       end
 
       # returns percentage based on ROUND SQL function, with precision(ROUNDING DIGITS)
-      def percent(total, attr = count, rounding = self.precision)
+      def percent(total, attr = count, rounding = SQLFunctions.precision)
         total == 0 ? "0" : "ROUND((#{attr}*100.0)/#{total}, #{rounding})"
       end
 
       # returns ROUND of multipliers, with precision(self.precision)
-      def multiply(attr, multiplier, rounding = self.precision)
+      def multiply(attr, multiplier, rounding = SQLFunctions.precision)
         "ROUND(#{attr}*#{multiplier}, #{rounding})"
       end
 
       # returns ROUND of attr/divider, with precision(self.precision)
-      def divide(attr, divider, rounding = self.precision)
+      def divide(attr, divider, rounding = SQLFunctions.precision)
         "ROUND(#{attr}/#{divider}, #{rounding})"
       end
 
