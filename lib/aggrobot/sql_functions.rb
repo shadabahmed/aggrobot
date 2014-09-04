@@ -13,14 +13,14 @@ module Aggrobot
 
     def self.setup(precision = 2, adapter = ActiveRecord::Base.configurations[Rails.env]['adapter'])
       extend Common
-      self.precision = precision
       adapter_module = case adapter
                          when POSTGRES_ADAPTER_NAME then PgSQL
                          when MYSQL_ADAPTER_NAME then MySQL
                          when SQLITE_ADAPTER_NAME then SQLite
                     else
                       raise Exception.new "Database adaptor not supported: #{ActiveRecord::Base.connection.adapter_name}"
-                    end
+                       end
+      adapter_module.precision = precision
       extend adapter_module
     end
 
