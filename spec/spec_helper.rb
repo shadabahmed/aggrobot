@@ -32,9 +32,10 @@ require 'database_cleaner'
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
 begin
-  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3',
-                                          :database => ':memory:',
-                                          :min_messages => 'warning')
+  ActiveRecord::Base.configurations = {'test' => {'adapter' => 'sqlite3',
+                                                  'database' => ':memory:',
+                                                  'min_messages' => 'warning'}}
+  ActiveRecord::Base.establish_connection
   connection = ActiveRecord::Base.connection
   connection.execute("SELECT 1")
 rescue

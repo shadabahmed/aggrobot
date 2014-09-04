@@ -7,6 +7,8 @@ module Aggrobot
     autoload :PgSQL, File.expand_path('../sql_functions/pgsql', __FILE__)
     autoload :SQLite, File.expand_path('../sql_functions/sqlite', __FILE__)
 
+    mattr_accessor :precision
+
     POSTGRES_ADAPTER_NAME = 'postgresql'
     SQLITE_ADAPTER_NAME = 'sqlite3'
     MYSQL_ADAPTER_NAME = 'mysql2'
@@ -18,9 +20,9 @@ module Aggrobot
                          when MYSQL_ADAPTER_NAME then MySQL
                          when SQLITE_ADAPTER_NAME then SQLite
                     else
-                      raise Exception.new "Database adaptor not supported: #{ActiveRecord::Base.connection.adapter_name}"
-                       end
-      adapter_module.precision = precision
+                      raise Exception.new "Database adaptor not supported: #{adapter}"
+                    end
+      self.precision = precision
       extend adapter_module
     end
 
