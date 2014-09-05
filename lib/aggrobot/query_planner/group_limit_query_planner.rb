@@ -35,7 +35,7 @@ module Aggrobot
       def other_group_results(columns)
         if @other_group
           columns[0] = SQLFunctions.sanitize(@other_group)
-          @collection.where.not(@top_groups_conditions).group(columns[0]).pluck(*columns)
+          @collection.where.not(@top_groups_conditions).pluck(*columns)
         else
           []
         end
