@@ -12,7 +12,7 @@ module Aggrobot
     SQLITE_ADAPTER_NAME = 'sqlite3'
     MYSQL_ADAPTER_NAME = 'mysql2'
 
-    def self.setup(precision, adapter = ActiveRecord::Base.configurations[Rails.env]['adapter'])
+    def self.setup(precision = nil, adapter = ActiveRecord::Base.configurations[Rails.env]['adapter'])
       precision ||= DEFAULT_PRECISION
       @precision = precision
       extend Common
