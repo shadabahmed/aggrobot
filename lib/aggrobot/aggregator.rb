@@ -72,7 +72,7 @@ module Aggrobot
     end
 
     def query_planner
-      @query_planner ||= QueryPlanner.create(@collection, DEFAULT_GROUP_BY)
+      @query_planner ||= QueryPlanner.create(@collection)
     end
 
     def yield_results

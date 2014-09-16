@@ -8,7 +8,7 @@ require 'aggrobot/query_planner/bucketed_groups_query_planner'
 module Aggrobot::QueryPlanner
 
   # creates query object
-  def self.create(collection, group_by, opts = nil)
+  def self.create(collection, group_by = nil, opts = nil)
     case
     when opts.nil?
       DefaultQueryPlanner.new(collection, group_by)

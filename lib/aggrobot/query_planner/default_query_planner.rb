@@ -3,12 +3,12 @@ module Aggrobot
     class DefaultQueryPlanner
       include ParametersValidator
 
-      def initialize(collection, group = DEFAULT_GROUP_BY)
+      def initialize(collection, group = nil)
         @collection, @group = validate_and_extract_relation(collection), group
       end
 
       def sub_query(group_value)
-        if @group == DEFAULT_GROUP_BY
+        unless @group
           @collection
         else
           @collection.where(group_condition(group_value))
@@ -39,7 +39,7 @@ module Aggrobot
       end
 
       def results_query
-        @result_query ||= @collection.group(@group)
+        @result_query ||= (@group ? @collection.group(@group) : @collection)
       end
 
       def collection_is_none?
