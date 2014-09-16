@@ -44,7 +44,6 @@ module Aggrobot
     #     : opts is a map as {limit_to: limit}, creats groups by group on @collection with a limit
     #     : opts is a map as {buckets: [list_items]}, creats groups by [list_items] on @collection
     def group_by(group, opts = nil)
-      raise_error "Group_by takes only symbol or a string as argument" unless group.is_a?(Symbol) or group.is_a?(String)
       @query_planner = QueryPlanner.create(@collection, group, opts)
     end
 

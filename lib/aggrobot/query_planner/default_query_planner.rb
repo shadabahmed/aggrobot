@@ -22,9 +22,12 @@ module Aggrobot
           results_query.pluck(*columns).collect do |result_row|
             [result_row[0..(@group.count - 1)]] + result_row[@group.count..-1]
           end
-        else
-          columns = [@group || SQLFunctions.sanitize('All'), SQLFunctions.count] + extra_cols
+        elsif @group
+          columns = [@group, SQLFunctions.count] + extra_cols
           results_query.pluck(*columns)
+        else
+          columns = [SQLFunctions.count] + extra_cols
+          [@group] + results_query.pluck(*columns)
         end
       end
 
