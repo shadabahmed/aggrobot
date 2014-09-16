@@ -23,7 +23,7 @@ module Aggrobot
             [result_row[0..(@group.count - 1)]] + result_row[@group.count..-1]
           end
         else
-          columns = [@group, SQLFunctions.count] + extra_cols
+          columns = [@group || SQLFunctions.sanitize('All'), SQLFunctions.count] + extra_cols
           results_query.pluck(*columns)
         end
       end
