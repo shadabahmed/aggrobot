@@ -27,7 +27,7 @@ module Aggrobot
           results_query.pluck(*columns)
         else
           columns = [SQLFunctions.count] + extra_cols
-          [@group] + results_query.pluck(*columns)
+          [[@group] + results_query.pluck(*columns).first]
         end
       end
 

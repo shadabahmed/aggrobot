@@ -60,6 +60,14 @@ module Aggrobot
         "ROUND(#{attr}/#{divider}, #{rounding})"
       end
 
+      def if_else(cond, if_true, if_false = 'NULL')
+        "(CASE WHEN (#{cond}) then (#{if_true}) else (#{if_false}) END)"
+      end
+
+      def count_condition(cond)
+        count(if_else(cond, 1))
+      end
+
     end
   end
 end
