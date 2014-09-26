@@ -4,7 +4,7 @@ module Aggrobot
 
     delegate :collection, :group_by, :default_groups, :override, :select, :group_labels, :to => :@aggregator
     delegate :count,:sanitize, :desc, :asc, :count, :unique_count, :max, :min, :sum, :avg, :average,
-             :group_collect, :percent, :multiply, :divide, :count_condition, :to => SQLFunctions
+             :group_collect, :percent, :multiply, :divide, :count_condition, :round, :to => SQLFunctions
 
     def run(block, args = {})
       instance_exec(args, &block)

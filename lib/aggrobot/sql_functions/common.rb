@@ -68,6 +68,11 @@ module Aggrobot
         count(if_else(cond, 1))
       end
 
+      # returns ROUNDED value of attr, with precision(ROUNDING DIGITS)
+      def round(attr, rounding = SQLFunctions.precision)
+        "ROUND(#{attr}, #{rounding})"
+      end
+
     end
   end
 end
