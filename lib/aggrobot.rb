@@ -34,7 +34,7 @@ module Aggrobot
 
   # sets ROUNDING_DIGITS to percent_precision, default is 2
   def self.setup(app)
-    SQLFunctions.setup(app.config.aggrobot.percent_precision)
+    SQLFunctions.setup(app.config.aggrobot.percent_precision, app.config.aggrobot.adapter)
   end
 
 end

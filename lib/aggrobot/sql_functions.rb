@@ -12,9 +12,9 @@ module Aggrobot
     SQLITE_ADAPTER_NAME = 'sqlite3'
     MYSQL_ADAPTER_NAME = 'mysql2'
 
-    def self.setup(precision = nil, adapter = ActiveRecord::Base.configurations[Rails.env]['adapter'])
-      precision ||= DEFAULT_PRECISION
-      @precision = precision
+    def self.setup(precision, adapter)
+      @precision = precision || DEFAULT_PRECISION
+      adapter ||= ActiveRecord::Base.configurations[Rails.env]['adapter']
       extend Common
       adapter_module = case adapter
                          when POSTGRES_ADAPTER_NAME then PgSQL
